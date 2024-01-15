@@ -1,0 +1,10 @@
+<launch>
+    <node name = "Remote" pkg ="testlastweek" type = "remote.py" output = "screen">
+    </node>
+
+    <node name = "Turtlesim" pkg ="turtlesim" type = "turtlesim_node" output = "screen">
+    </node>
+
+    <node name = "Motion" pkg ="testlastweek" type = "motion.py" output = "screen">
+    </node>
+</launch>
