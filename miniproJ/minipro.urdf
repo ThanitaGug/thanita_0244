@@ -1,0 +1,118 @@
+<?xml version = "1.0"?>
+<robot name = "robotArm">
+
+<!-- base link -->
+<!-- <link name = "base_link"/> -->
+<!-- link -->
+
+<link name = "base_link">
+    <visual>
+        <geometry>
+            <!-- import file stl มีหน่วยเป็นเมตร ขนาดคือส่วนที่กำหนดมาแล้วจาก STL โดยที่ปรับคือการปรับ scale xyz `-->
+            <mesh filename="package://robot_description/minipro/link1_1.STL" scale = "0.001 0.001 0.001 "/>
+
+        </geometry>
+        <origin xyz = "-0.1 0.1 0 " rpy = "1.56 0 0" />
+    </visual>
+
+    <collision>
+    <!-- gunchon -->
+        <geometry>
+            <!-- import file stl มีหน่วยเป็นเมตร ขนาดคือส่วนที่กำหนดมาแล้วจาก STL โดยที่ปรับคือการปรับ scale xyz -->
+            <mesh filename ="package://robot_description/minipro/link1_1.STL" scale = "0.001 0.001 0.001"/>
+        </geometry>
+        <origin xyz = "-0.1 0.1 0" rpy = "1.56 0 0" />
+    </collision>
+
+     <inertial>
+        <origin xyz = "-0.1 0.1 0" rpy = "1.56 0 0" />
+        <mass value = "0.1598"/>
+        <!-- mass = kg มีหน่วยเป็นกิโล
+        innertia คือความเค้นความเครียดมีหน่วยเป็น นิวตันเมตร-->
+        <inertia ixx = "0.001" ixy = "0" ixz = "0" iyy = "0.001" iyz = "0" izz = "0.001"/>
+    </inertial>
+</link>
+
+<link name = "link1">
+    <visual>
+        <geometry>
+            <!-- import file stl มีหน่วยเป็นเมตร ขนาดคือส่วนที่กำหนดมาแล้วจาก STL โดยที่ปรับคือการปรับ scale xyz -->
+            <mesh filename="package://robot_description/minipro/new_joint1.STL" scale = "0.001 0.001 0.001" />
+        </geometry>
+        <origin xyz = "-0.0698 0.043 0.043" rpy = "1.56 0 0" />
+    </visual>
+
+    <collision>
+    <!-- gunchon -->
+        <geometry>
+            <!-- import file stl มีหน่วยเป็นเมตร ขนาดคือส่วนที่กำหนดมาแล้วจาก STL โดยที่ปรับคือการปรับ scale xyz -->
+            <mesh filename ="package://robot_description/minipro/new_joint1.STL" scale = "0.001 0.001 0.001"/>
+        </geometry>
+        <origin xyz = "-0.0698 0.43 0.043" rpy = "1.56 0 0" />
+    </collision>
+
+     <inertial>
+        <origin xyz = "-0.0698 0.43 0.043" rpy = "1.56 0 0" />
+        <mass value = "0.104"/>
+        <!-- mass = kg มีหน่วยเป็นกิโล
+        innertia คือความเค้นความเครียดมีหน่วยเป็น นิวตันเมตร-->
+        <inertia ixx = "0.001" ixy = "0" ixz = "0" iyy = "0.001" iyz = "0" izz = "0.001"/>
+    </inertial>
+</link>
+
+<!-- ////////////    joint1    /////////// -->
+<joint name = "joint1" type = "revolute">
+<!-- การตั้งชื่อ และชนิด -->
+
+    <parent link = "base_link"/>        <!-- สิ่งที่ติดอยู่กับ joint  -->
+    <child link = "link1"/>     <!-- และติดอยู่กับลิ้ง 1  -->
+    <origin xyz = "0 0 0" rpy = "0 0 0"/>       <!-- โดยศูนย์กลางจ้อยอยู่ที่ตำแหน่ง ..... -->
+    <axis xyz = "0 0 1"/>       <!-- ให้แกน z ขึ้นไป 1 -->
+
+    <limit lower = "-3.1416" upper = "3.1416" effort = "100" velocity = "1"/>
+    <!-- ช่วงที่จ้อยสามารถขยับได้ น้อยสุดที่ -3.14 สูงสุดที่ 3.14 เอฟฟอดคือค่าความเฉื่อย เวโลซิตี้คือความเร็ว -->
+
+</joint>
+</robot>
+
+<!-- <link name = "link2">
+    <visual>
+        <geometry>
+            <!-- import file stl มีหน่วยเป็นเมตร ขนาดคือส่วนที่กำหนดมาแล้วจาก STL โดยที่ปรับคือการปรับ scale xyz -->
+            <mesh filename="package://robot_description/minipro/joint2_pismatic.STL" scale = "0.001 0.001 0.001" />
+        </geometry>
+        <origin xyz = "0.0805 -0.013 0.0155" rpy = "0 3.12 0" />
+    </visual>
+
+    <collision>
+    <!-- gunchon -->
+        <geometry>
+            <!-- import file stl มีหน่วยเป็นเมตร ขนาดคือส่วนที่กำหนดมาแล้วจาก STL โดยที่ปรับคือการปรับ scale xyz -->
+            <mesh filename ="package://robot_description/minipro/joint2_pismatic.STL" scale = "0.001 0.001 0.001"/>
+        </geometry>
+        <origin xyz = "0.0805 -0.013 0.0155" rpy = "0 3.12 0" />
+    </collision>
+
+     <inertial>
+        <origin xyz = "0.0805 -0.013 0.0155" rpy = "0 3.12 0" />
+        <mass value = "0.01883"/>
+        <!-- mass = kg มีหน่วยเป็นกิโล
+        innertia คือความเค้นความเครียดมีหน่วยเป็น นิวตันเมตร-->
+        <inertia ixx = "0.001" ixy = "0" ixz = "0" iyy = "0.001" iyz = "0" izz = "0.001"/>
+    </inertial>
+</link>
+
+<!-- ////////////    joint2    /////////// -->
+<joint name = "joint2" type = "prismatic">
+<!-- การตั้งชื่อ และชนิด -->
+
+    <parent link = "link1"/>        <!-- สิ่งที่ติดอยู่กับ joint  -->
+    <child link = "link2"/>     <!-- และติดอยู่กับลิ้ง 1  -->
+    <origin xyz = "0 0 0.155 " rpy = "0 0 0"/>       <!-- โดยศูนย์กลางจ้อยอยู่ที่ตำแหน่ง ..... -->
+    <axis xyz = "1 0 0"/>      <!-- ให้แกน z ขึ้นไป 1 -->
+
+    <limit lower = "-0.049" upper = "0.049" effort = "100" velocity = "1"/>
+    <!-- ช่วงที่จ้อยสามารถขยับได้ น้อยสุดที่ -3.14 สูงสุดที่ 3.14 เอฟฟอดคือค่าความเฉื่อย เวโลซิตี้คือความเร็ว -->
+
+</joint> -->
+
