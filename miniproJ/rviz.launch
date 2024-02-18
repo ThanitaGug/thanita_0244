@@ -1,0 +1,7 @@
+<launch>
+  <param name="robot_description" textfile="$(find robot_description)/urdf/minipro.urdf"/>
+  <arg name="rvizconfig" default="$(find urdf_tutorial)/rviz/urdf.rviz" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+  <node name="GUI_RP" pkg="thanita64" type="miniRP.py"/>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" />
+</launch>
