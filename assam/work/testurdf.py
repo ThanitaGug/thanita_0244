@@ -3,33 +3,33 @@
 
 import rospy
 from std_msgs.msg import Int16
+from std_msgs.msg import Float64
 from std_msgs.msg import String
 from sensor_msgs.msg import JointState
-import tf
+# import tf
 
-br = tf.TransformBroadcaster();
-def get_param(name, value=None):
-    private = "~%s" % name
-    if rospy.has_param(private):
-        return rospy.get_param(private)
-    elif rospy.has_param(name):
-        return rospy.get_param(name)
-    else:
-        return value
+# br = tf.TransformBroadcaster()
+# def get_param(name, value=None):
+#     private = "~%s" % name
+#     if rospy.has_param(private):
+#         return rospy.get_param(private)
+#     elif rospy.has_param(name):
+#         return rospy.get_param(name)
+#     else:
+#         return value
 
-def talker(num10):
-    nong1 = num10.data
+def talker():
 
     pub = rospy.Publisher('joint_states', JointState, queue_size=10)
     rospy.init_node('teat', anonymous=True)
     rate = rospy.Rate(10) # 10hz
     msg = JointState()
     msg.name = ['joint1', 'joint2'];    
-    msg.position = [nong1,0.04]
-    source_list = get_param("source_list", [])
-    rospy.loginfo(str(source_list))
+    # msg.position = [1,0.04]
+    # source_list = get_param("source_list", [])
+    # rospy.loginfo(str(source_list))
     while not rospy.is_shutdown():
-        msg.header.stamp = rospy.Time.now();
+        msg.header.stamp = rospy.Time.now()
         pub.publish(msg)
         rate.sleep()
 sub = rospy.Subscriber("int_poten", Int16,callback=talker)

@@ -3,11 +3,19 @@ import customtkinter,tkinter
 from tkinter import*
 import rospy
 from std_msgs.msg import Int16
+from std_msgs.msg import Float64
 from geometry_msgs.msg import Twist
-from std_srvs.srv import Empty
 from sensor_msgs.msg import JointState
-import tf
-import threading
+# import tf
+# import threading
+
+pubtojoint = rospy.Publisher('joint_states', JointState, queue_size=10)
+
+def setup():
+    msg = JointState()
+    msg.name = ['joint1', 'joint2'];  
+    msg.position = [0,0]
+    pubtojoint.publish(msg)
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("blue")
@@ -23,6 +31,7 @@ rospy.init_node("GUI_EX", anonymous=True)
 rate = rospy.Rate(10)
 rate.sleep()
 system_state = "ON"
+frame.after(1000,setup)
         
 #pub = rospy.Publisher('joint_states', JointState, queue_size=10)
 
@@ -35,14 +44,15 @@ frame.pack(padx = 1,pady = 1,fill="both",expand=True)
 L1 = Label(frame,font = ('Arial',60),text ="00",bg="#BEBEBE")
 L1.place(x=380, y=200)
 
+
 def readS1(num):
     global system_state
+    global servo_read
     servo_read = num.data 
     if system_state == "ON":
         L1.config(text = str(servo_read))## รับข้อความ encoder
         slider.set(servo_read)
         print(servo_read)
-        talker()
         
 
 ## ตัวรับค่าโพเทนส่งให้ L2 Pote##
@@ -51,25 +61,26 @@ L2.place(x=730, y=200)
 
 def readS2(num1):
     global system_state
+    global poten_read
     poten_read = num1.data
     
     if system_state == "ON":
         L2.config(text=str(poten_read))
         slider2.set(poten_read)
         print(poten_read)
-        # talker()
-# sub1= rospy.Subscriber("poten_angle", Int16,callback=readS2)
-# sub= rospy.Subscriber("servo_angle", Int16,callback=readS1)
 
 ## ตัวรับค่าโพเทนส่งให้ L1 encoder cal ##
 L3 = Label(frame,font = ('Arial',60),text ="00",bg="#BEBEBE")
 L3.place(x=380, y=380)
+
 def readenco_cal(num3):
     global encoder_cal
     encoder_cal = num3.data 
     L3.config(text= str(encoder_cal))## รับข้อความ
+    # slider.set(encoder_cal)
     print(encoder_cal)
-sub3 = rospy.Subscriber("encoder_valuel", Int16,callback=readenco_cal)
+    # talker()
+sub3 = rospy.Subscriber("encoder_valuel", Float64,callback=readenco_cal)
 
 
 L4 = Label(frame,font = ('Arial',60),text ="00",bg="#BEBEBE")
@@ -78,42 +89,45 @@ def readpoten_cal(num2):
     global poten_cal
     poten_cal = num2.data 
     L4.config(text= str(poten_cal))## รับข้อความ
+    # slider2.set(poten_cal)
     print(poten_cal)
-sub4= rospy.Subscriber("poten_vul", Int16,callback=readpoten_cal)
+sub4= rospy.Subscriber("poten_vul", Float64,callback=readpoten_cal)
+
 # pub_poten = rospy.Publisher("int_poten",Int16, queue_size=10)
+def slider_event(value):
+    text_degree.set(f"{int(slider.get())}")
+    text_degree2.set(f"{int(slider2.get())}")
+    # V1 = text_var
+    # V2 = text_var2
+    print("encoder value = "+str(text_degree.get()))
+    print("poten value = "+str(text_degree2.get()))
+
+slider = customtkinter.CTkSlider(master=frame,from_=0,to=90,command=slider_event)
+slider.place(x=320,y=510,anchor=tkinter.W)
 
 
 
 
-
-# br = tf.TransformBroadcaster();
-# def get_param(name, value=None):
-#     private = "~%s" % name
-#     if rospy.has_param(private):
-#         return rospy.get_param(private)
-#     elif rospy.has_param(name):
-#         return rospy.get_param(name)
-#     else:
-#         return value
 
 def talker():
-    pub = rospy.Publisher('joint_states', JointState, queue_size=10)
-    #rospy.init_node('teat', anonymous=True)
-    rate = rospy.Rate(10) # 10hz
+    global encoder_cal
+    global poten_cal
     msg = JointState()
-    msg.name = ['joint1', 'joint2'];    
-    msg.position = [slider.get(),slider2.get()]
-    print(encoder_cal,poten_cal)
-    # source_list = get_param("source_list", [])
-    # rospy.loginfo(str(source_list))
-    # while not rospy.is_shutdown():
-    #     msg.header.stamp = rospy.Time.now();
-    pub.publish(msg)
+    rate = rospy.Rate(10) # 10hz
+    msg.name = ['joint1', 'joint2']
+    # msg.name = ['joint1', 'joint2']  
+    # msg.position = [slider.get(),slider2.get()] 
+    # pubtojoint.publish(msg)
+    # rate.sleep()      
+    
+    #rospy.init_node('teat', anonymous=True)
+    msg.position = [encoder_cal,poten_cal] 
+    msg.header.stamp = rospy.Time.now()
+    pubtojoint.publish(msg)
     rate.sleep()
 
 # talker_thread = threading.Thread(target=talker)
 # talker_thread.start()
-
 
 
 
@@ -136,6 +150,17 @@ def button_off():
     cmd = Twist()
     cmd.linear.x = -1.0
     cmd.angular.z = 0.0
+
+
+
+def button_reset():
+    # print("button OFF")
+    global system_state
+    print("RESET")
+    # system_state = "RESET"
+    talker()
+    
+
 sub1= rospy.Subscriber("poten_angle", Int16,callback=readS2)
 sub= rospy.Subscriber("servo_angle", Int16,callback=readS1)
 
@@ -151,6 +176,7 @@ label = customtkinter.CTkLabel(master=frame,
                                fg_color=("white", "gray75"),
                                corner_radius=8)
 label.place(x=55, y=55, anchor=tkinter.W)
+
 
 frame1 = customtkinter.CTkFrame(frame,fg_color= "#DCDCDC", width=250,height=500, corner_radius=10)
 # frame.place(relx=0, rely=0, anchor=tkinter.W)
@@ -213,6 +239,17 @@ button = customtkinter.CTkButton(master=frame1,
                                  command=button_off)
 button.place(x=150, y=400, anchor=tkinter.W)
 
+button = customtkinter.CTkButton(master=frame1,
+                                 width=80,
+                                 height=32,
+                                 fg_color="yellow", 
+                                 hover_color="gray",
+                                 border_width=0,
+                                 corner_radius=8,
+                                 text="RESET",
+                                 command=talker)
+button.place(x=150, y=300, anchor=tkinter.W)
+
 ##จบเเถบข้อมูลด้านข้าง##
 
 ## JOINT 1 ##
@@ -250,19 +287,6 @@ labelr = customtkinter.CTkLabel(master = frame,textvariable = usevale_encoder ,w
                                 text_color="white",
                                 font=('Arial',15),
                                 corner_radius=8)
-labelr.place(x=350,y=340,anchor=tkinter.W)
-
-def slider_event(value):
-    text_degree.set(f"{int(slider.get())}")
-    text_degree2.set(f"{int(slider2.get())}")
-    # V1 = text_var
-    # V2 = text_var2
-    print("encoder value = "+str(text_degree.get()))
-    print("poten value = "+str(text_degree2.get()))
-
-slider = customtkinter.CTkSlider(master=frame,from_=0,to=90,command=slider_event)
-slider.place(x=320,y=510,anchor=tkinter.W)
-
 
 text_degree = tkinter.StringVar(value="0")
 labelr = customtkinter.CTkLabel(master = frame,textvariable = text_degree,width=120,height=25,
@@ -312,7 +336,7 @@ labelr = customtkinter.CTkLabel(master = frame,textvariable = usevale_poten ,wid
                                 corner_radius=8)
 labelr.place(x=700,y=340,anchor=tkinter.W)
 
-slider2 = customtkinter.CTkSlider(master=frame,from_=0,to=90,command=slider_event)
+slider2 = customtkinter.CTkSlider(master=frame,from_=0,to=180,command=slider_event)
 slider2.place(x=680,y=510,anchor=tkinter.W)
 
 text_degree2 = tkinter.StringVar(value="0")

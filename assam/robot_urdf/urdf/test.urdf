@@ -1,0 +1,89 @@
+<?xml version = "1.0"?>
+<robot name = "robotArm">
+
+<!-- base link -->
+<link name = "base_link"/>
+<!-- link -->
+
+<link name = "link1">
+    <visual>
+        <geometry>
+            <!-- make cylinder 0.1 m -->
+            <cylinder length = "0.1" radius = "0.1"/>
+        </geometry>
+        <origin xyz = " 0 0 0 " rpy = "0 0 0" />
+    </visual>
+
+    <collision>
+    <!-- gunchon -->
+        <geometry>
+            <!-- make cylinder 0.1 m มีหน่วยเป็นเมตร -->
+            <cylinder length = "0.1" radius = "0.1"/>
+        </geometry>
+        <origin xyz = " 0 0 0 " rpy = "0 0 0" />
+    </collision>
+
+     <inertial>
+        <origin xyz = " 0 0 0 " rpy = "0 0 0" />
+        <mass value = "1"/>
+        <!-- mass = kg มีหน่วยเป็นกิโล
+        innertia คือความเค้นความเครียดมีหน่วยเป็น นิวตันเมตร-->
+        <inertia ixx = "0.001" ixy = "0" ixz = "0" iyy = "0.001" iyz = "0" izz = "0.001"/>
+    </inertial>
+</link>
+
+<!-- ////////////    joint    /////////// -->
+<joint name = "joint1" type = "revolute">
+<!-- การตั้งชื่อ และชนิด -->
+
+    <parent link = "base_link"/>        <!-- สิ่งที่ติดอยู่กับ joint  -->
+    <child link = "link1"/>     <!-- และติดอยู่กับลิ้ง 1  -->
+    <origin xyz = "0 0 0" rpy = "0 0 0"/>       <!-- โดยศูนย์กลางจ้อยอยู่ที่ตำแหน่ง ..... -->
+    <axis xyz = "0 0 1"/>       <!-- ให้แกน z ขึ้นไป 1 -->
+
+    <limit lower = "-3.1416" upper = "3.1416" effort = "100" velocity = "1"/>
+    <!-- ช่วงที่จ้อยสามารถขยับได้ น้อยสุดที่ -3.14 สูงสุดที่ 3.14 เอฟฟอดคือค่าความเฉื่อย เวโลซิตี้คือความเร็ว -->
+
+</joint>
+
+<link name = "link2">
+    <visual>
+        <geometry>
+            <!-- make cylinder 0.1 m ทำเป็นบล็อค ก*ย*ส 10*10*10 cm-->
+            <box size = "0.1 0.1 0.1"/>
+        </geometry>
+        <origin xyz = " 0 0 0 " rpy = "0 0 0" />
+    </visual>
+
+    <collision>
+    <!-- gunchon -->
+        <geometry>
+            <!-- make cylinder 0.1 m มีหน่วยเป็นเมตร -->
+            <cylinder length = "0.1" radius = "0.1"/>
+        </geometry>
+        <origin xyz = " 0 0 0 " rpy = "0 0 0" />
+    </collision>
+
+     <inertial>
+        <origin xyz = " 0 0 0 " rpy = "0 0 0" />
+        <mass value = "1"/>
+        <!-- mass = kg มีหน่วยเป็นกิโล
+        innertia คือความเค้นความเครียดมีหน่วยเป็น นิวตันเมตร-->
+        <inertia ixx = "0.001" ixy = "0" ixz = "0" iyy = "0.001" iyz = "0" izz = "0.001"/>
+    </inertial>
+</link>
+
+<!-- ////////////    joint2    /////////// -->
+<joint name = "joint2" type = "prismatic">
+<!-- การตั้งชื่อ และชนิด -->
+
+    <parent link = "link1"/>        <!-- สิ่งที่ติดอยู่กับ joint  -->
+    <child link = "link2"/>     <!-- และติดอยู่กับลิ้ง 1  -->
+    <origin xyz = "0 0 0.1" rpy = "0 0 0"/>       <!-- โดยศูนย์กลางจ้อยอยู่ที่ตำแหน่ง ..... -->
+    <axis xyz = "0 1 0"/>       <!-- ให้แกน z ขึ้นไป 1 -->
+
+    <limit lower = "-0.2" upper = "0.2" effort = "100" velocity = "1"/>
+    <!-- ช่วงที่จ้อยสามารถขยับได้ น้อยสุดที่ -3.14 สูงสุดที่ 3.14 เอฟฟอดคือค่าความเฉื่อย เวโลซิตี้คือความเร็ว -->
+
+</joint>
+</robot>

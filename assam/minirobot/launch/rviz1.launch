@@ -1,0 +1,14 @@
+<launch>
+  <param name="robot_description" textfile="$(find robot_urdf)/urdf/urdf1.urdf"/>
+  <!-- <arg name="rvizconfig" default="$(find urdf_tutorial)/rviz/urdf.rviz" /> -->
+  <arg name="rvizconfig" default="$(find urdf_tutorial)/rviz/urdf.rviz" />
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+  <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/> -->
+  <node name="GUI_EX" pkg="work" type="editflot.py"/>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" />
+
+  <!-- <node name="test" pkg="work" type="testurdf.py"/> -->
+  <!-- <node name="GUI_EX" pkg="work" type="guiminirobot.py"/> -->
+  <!-- <node name="gui" pkg="work" type="old_code_gui.py"/> -->
+</launch>
